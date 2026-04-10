@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Test</title>
+  <style>
+    body { font-family: Arial; max-width: 500px; margin: 50px auto; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+    .result { margin-top: 20px; padding: 10px; border-radius: 5px; }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <h1>E-Commerce Login Test</h1>
+  
+  <!-- <h2>Client Login</h2>
+  <input type="text" id="clientEmail" value="client@gmail.com" placeholder="Email">
+  <input type="password" id="clientPassword" value="client1234" placeholder="Password">
+  <button onclick="testLogin('client')">Test Client Login</button>
+
+  <h2>Admin Login</h2>
+  <input type="text" id="adminEmail" value="admin@gmail.com" placeholder="Email">
+  <input type="password" id="adminPassword" value="admin1234" placeholder="Password">
+  <button onclick="testLogin('admin')">Test Admin Login</button> -->
+
+  <div id="result"></div>
+
+  <script>
+    async function testLogin(type) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p>Testing...</p>';
+
+      const email = type === 'client' 
+        ? document.getElementById('clientEmail').value 
+        : document.getElementById('adminEmail').value;
+      
+      const password = type === 'client' 
+        ? document.getElementById('clientPassword').value 
+        : document.getElementById('adminPassword').value;
+
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          resultDiv.innerHTML = `
+            <div class="result success">
+              <h3>✅ LOGIN SUCCESSFUL!</h3>
+              <p><strong>User:</strong> ${data.user.name}</p>
+              <p><strong>Email:</strong> ${data.user.email}</p>
+              <p><strong>Role:</strong> ${data.user.role}</p>
+              <p><strong>Token:</strong> ${data.token.substring(0, 50)}...</p>
+            </div>
+          `;
+        } else {
+          resultDiv.innerHTML = `
+            <div class="result error">
+              <h3>❌ LOGIN FAILED</h3>
+              <p><strong>Message:</strong> ${data.message}</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="result error">
+            <h3>❌ ERROR</h3>
+            <p>${error.message}</p>
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
