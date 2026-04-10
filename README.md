@@ -1,2 +1,4 @@
-# mini-project
-crud operation basic of full stack !
+Angular Frontend
+Commands:
+npm install
+ng serve
